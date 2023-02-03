@@ -1,0 +1,106 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+
+service:
+  display-name: Billable Metrics Service
+  auth: true
+  base-path: /billable_metrics
+  endpoints:
+    createBillableMetric:
+      path: ""
+      method: POST
+      docs: Create a new billable metric
+      display-name: Create a new billable metric
+      request:
+        name: CreateBillableMetricRequest
+        body: commons.BillableMetricInput
+      response: commons.BillableMetric
+
+    findBillableMetric:
+      path: /{code}
+      method: GET
+      docs: Return a single billable metric
+      display-name: Find billable metric by code
+      path-parameters:
+        code:
+          docs: Code of the existing billable metric
+          type: string
+      response: commons.BillableMetric
+
+    updateBillableMetric:
+      path: /{code}
+      method: PUT
+      docs: Update an existing billable metric by code
+      display-name: Update an existing billable metric
+      path-parameters:
+        code:
+          docs: Code of the existing billable metric
+          type: string
+      request:
+        name: UpdateBillableMetricRequest
+        body: commons.BillableMetricInput
+      response: commons.BillableMetric
+
+    destroyBillableMetric:
+      path: /{code}
+      method: DELETE
+      docs: Delete a billable metric
+      display-name: Delete a billable metric
+      path-parameters:
+        code:
+          docs: Code of the existing billable metric
+          type: string
+      response: commons.BillableMetric
+
+    findAllBillableMetrics:
+      path: ""
+      method: GET
+      docs: Find all billable metrics in certain organisation
+      display-name: Find Billable metrics
+      request:
+        name: FindAllBillableMetrics
+        query-parameters:
+          page:
+            docs: Number of page
+            type: optional<integer>
+          per_page:
+            docs: Number of records per page
+            type: optional<integer>
+      response: BillableMetrics
+
+    findAllBillableMetricGroups:
+      path: /{code}/groups
+      method: GET
+      docs: Find all billable metric groups in certain organisation
+      display-name: Find Billable metric groups
+      path-parameters:
+        code:
+          docs: Code of the existing billable metric
+          type: string
+      request:
+        name: FindAllBillableMetricGroups
+        query-parameters:
+          page:
+            docs: Number of page
+            type: optional<integer>
+          per_page:
+            docs: Number of records per page
+            type: optional<integer>
+      response: Groups
+
+types:
+  BillableMetrics:
+    properties:
+      billable_metrics: optional<list<commons.BillableMetricObject>>
+
+  Groups:
+    properties:
+      groups: optional<list<GroupObject>>
+
+  GroupObject:
+    properties:
+      key: optional<string>
+      value: optional<string>
+      lago_id: optional<string>

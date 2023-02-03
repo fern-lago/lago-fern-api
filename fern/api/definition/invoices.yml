@@ -1,0 +1,105 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+
+service:
+  display-name: Invoices Service
+  auth: true
+  base-path: /invoices
+  endpoints:
+    findInvoice:
+      path: /{id}
+      method: GET
+      docs: Return a single invoice
+      display-name: Find invoice by ID
+      path-parameters:
+        id:
+          docs: ID of the existing Lago Invoice
+          type: string
+      response: commons.Invoice
+
+    updateInvoice:
+      path: /{id}
+      method: PUT
+      docs: Update an existing invoice
+      display-name: Update an existing invoice status
+      path-parameters:
+        id:
+          docs: ID of the existing Lago Invoice
+          type: string
+      request:
+        body: InvoiceInput
+      response: commons.Invoice
+
+    downloadInvoice:
+      path: /{id}/download
+      method: POST
+      docs: Download an existing invoice
+      display-name: Download an existing invoice
+      path-parameters:
+        id:
+          docs: ID of the existing Lago Invoice
+          type: string
+      response: commons.Invoice
+
+    retryPayment:
+      path: /{id}/retry_payment
+      method: POST
+      docs: Retry invoice payment
+      display-name: Retry invoice payment
+      path-parameters:
+        id:
+          docs: ID of the existing Lago Invoice
+          type: string
+
+    refreshInvoice:
+      path: /{id}/refresh
+      method: PUT
+      docs: Refresh a draft invoice
+      display-name: Refresh a draft invoice
+      path-parameters:
+        id:
+          docs: ID of the existing Lago Invoice
+          type: string
+      response: commons.Invoice
+
+    finalizeInvoice:
+      path: /{id}/finalize
+      method: PUT
+      docs: Finalize a draft invoice
+      display-name: Finalize a draft invoice
+      path-parameters:
+        id:
+          docs: ID of the draft Lago Invoice
+          type: string
+      response: commons.Invoice
+
+    findAllInvoices:
+      path: ""
+      method: GET
+      docs: Find all invoices in certain organisation
+      display-name: Find all invoices
+      request:
+        name: FindAllInvoicesRequest
+        query-parameters:
+          page:
+            docs: Number of page
+            type: optional<integer>
+          per_page:
+            docs: Number of records per page
+            type: optional<integer>
+          external_customer_id: optional<string>
+          issuing_date_from: optional<string>
+          issuing_date_to: optional<string>
+          status: optional<commons.InvoiceStatus>
+      response: Invoices
+
+types:
+  InvoiceInput:
+    properties:
+      invoice: optional<commons.InvoiceObject>
+
+  Invoices:
+    properties:
+      invoices: optional<list<commons.InvoiceObject>>

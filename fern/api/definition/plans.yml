@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+
+service:
+  display-name: Plans Service
+  auth: true
+  base-path: /plans
+  endpoints:
+    createPlan:
+      path: ""
+      method: POST
+      docs: Create a new plan
+      display-name: Create a new plan
+      request:
+        name: CreatePlanRequest
+        body: commons.PlanInput
+      response: commons.Plan
+
+    findPlan:
+      path: /{code}
+      method: GET
+      docs: Return a single plan
+      display-name: Fin plan by code
+      path-parameters:
+        code:
+          docs: Code of the existing plan
+          type: string
+      response: commons.Plan
+
+    updatePlan:
+      path: /{code}
+      method: PUT
+      docs: Update an existing plan by code
+      display-name: Update an existing plan
+      path-parameters:
+        code:
+          docs: Code of the existing plan
+          type: string
+      request:
+        name: UpdatePlanRequest
+        body: commons.PlanInput
+      response: commons.Plan
+
+    destroyPlan:
+      path: /{code}
+      method: DELETE
+      docs: Delete a plan
+      display-name: Delete a plan
+      path-parameters:
+        code:
+          docs: Code of the existing plan
+          type: string
+      response: commons.Plan
+
+    findAllPlans:
+      path: ""
+      method: GET
+      docs: Find all plans in certain organisation
+      display-name: Find plans
+      request:
+        name: FindAllPlansRequest
+        query-parameters:
+          page:
+            docs: Number of page
+            type: optional<integer>
+          per_page:
+            docs: Number of records per page
+            type: optional<integer>
+      response: Plans
+
+types:
+  Plans:
+    properties:
+      plans: optional<list<commons.PlanObject>>

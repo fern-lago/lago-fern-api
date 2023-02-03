@@ -1,0 +1,112 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+
+service:
+  display-name: Add-ons Service
+  auth: true
+  base-path: ""
+  endpoints:
+    createAddOn:
+      path: /add_ons
+      method: POST
+      docs: Create a new add-on
+      display-name: Create a new add-on
+      request:
+        name: CreateAddOnRequest
+        body: commons.AddOnInput
+      response: commons.AddOn
+
+    findAddOn:
+      path: /add_ons/{code}
+      method: GET
+      docs: Return a single add-on
+      display-name: Find add-on by code
+      path-parameters:
+        code:
+          docs: Code of the existing add-on
+          type: string
+      response: commons.AddOn
+
+    updateAddOn:
+      path: /add_ons/{code}
+      method: PUT
+      docs: Update an existing add-on by code
+      display-name: Update an existing add-on
+      path-parameters:
+        code:
+          docs: Code of the existing add-on
+          type: string
+      request:
+        name: UpdateAddOnRequest
+        body: commons.AddOnInput
+      response: commons.AddOn
+
+    destroyAddOn:
+      path: /add_ons/{code}
+      method: DELETE
+      docs: Delete an add-on
+      display-name: Delete an add-on
+      path-parameters:
+        code:
+          docs: Code of the existing add-on
+          type: string
+      response: commons.AddOn
+
+    findAllAddOns:
+      path: /add_ons
+      method: GET
+      docs: Find all add-ons in certain organisation
+      display-name: Find add-ons
+      request:
+        name: FindAllAddOnsRequest
+        query-parameters:
+          page:
+            docs: Number of page
+            type: optional<integer>
+          per_page:
+            docs: Number of records per page
+            type: optional<integer>
+      response: AddOns
+
+    applyAddOn:
+      path: /applied_add_ons
+      method: POST
+      docs: Apply an add-on to a customer
+      display-name: Apply an add-on to a customer
+      request:
+        name: ApplyAddOnRequest
+        body: AppliedAddOnInput
+      response: AppliedAddOn
+
+types:
+  AddOns:
+    properties:
+      add_ons: optional<list<commons.AddOnObject>>
+
+  AppliedAddOnInput:
+    properties:
+      applied_add_on: optional<AppliedAddOnInputObject>
+
+  AppliedAddOnInputObject:
+    properties:
+      external_customer_id: optional<string>
+      add_on_code: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+
+  AppliedAddOn:
+    properties:
+      applied_add_on: optional<AppliedAddOnObject>
+
+  AppliedAddOnObject:
+    properties:
+      lago_id: optional<string>
+      lago_add_on_id: optional<string>
+      add_on_code: optional<string>
+      lago_customer_id: optional<string>
+      external_customer_id: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      created_at: optional<string>

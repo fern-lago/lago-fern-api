@@ -1,0 +1,128 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+
+service:
+  display-name: Credit Notes Service
+  auth: true
+  base-path: /credit_notes
+  endpoints:
+    createCreditNote:
+      path: ""
+      method: POST
+      docs: Create a new credit note
+      display-name: Create a new Credit note
+      request:
+        body: CreditNoteInput
+      response: commons.CreditNote
+
+    findCreditNote:
+      path: /{id}
+      method: GET
+      docs: Return a single credit note
+      display-name: Find credit note
+      path-parameters:
+        id:
+          docs: Id of the existing credit note
+          type: string
+      response: commons.CreditNote
+
+    updateCreditNote:
+      path: /{id}
+      method: PUT
+      docs: Update an existing credit note
+      display-name: Update an existing credit note
+      path-parameters:
+        id:
+          docs: Id of the existing credit note
+          type: string
+      request:
+        body: CreditNoteUpdateInput
+      response: commons.CreditNote
+
+    downloadCreditNote:
+      path: /{id}/download
+      method: POST
+      docs: Download an existing credit note
+      display-name: Download an existing credit note
+      path-parameters:
+        id:
+          docs: ID of the existing Lago Credit note
+          type: string
+      response: commons.CreditNote
+
+    voidCreditNote:
+      path: /{id}/void
+      method: PUT
+      docs: Void an existing credit note
+      display-name: Void existing credit note
+      path-parameters:
+        id:
+          docs: ID of the existing Lago Credit note
+          type: string
+      response: commons.CreditNote
+
+    findAllCreditNotes:
+      path: ""
+      method: GET
+      docs: Find all credit notes in certain organisation
+      display-name: Find Credit notes
+      request:
+        query-parameters:
+          page:
+            docs: Number of page
+            type: optional<integer>
+          per_page:
+            docs: Number of records per page
+            type: optional<integer>
+          external_customer_id:
+            docs: External customer ID
+            type: optional<string>
+      response: CreditNotes
+
+types:
+  CreditNoteInput:
+    properties:
+      credit_note: optional<CreditNoteInputObject>
+
+  CreditReason:
+    enum:
+      - duplicated_charge
+      - product_unsatisfactory
+      - order_change
+      - order_cancellation
+      - fraudulent_charge
+      - other
+
+  CreditItem:
+    properties:
+      fee_id: optional<string>
+      amount_cents: optional<integer>
+
+  CreditNoteInputObject:
+    properties:
+      invoice_id: optional<string>
+      reason: optional<CreditReason>
+      description: optional<string>
+      credit_amount_cents: optional<integer>
+      refund_amount_cents: optional<integer>
+      items: optional<list<CreditItem>>
+
+  CreditNoteUpdateInput:
+    properties:
+      credit_note: optional<CreditNoteUpdateInputObject>
+
+  RefundStatus:
+    enum:
+      - pending
+      - succeeded
+      - failed
+
+  Status:
+    properties:
+      refund_status: optional<RefundStatus>
+
+  CreditNotes:
+    properties:
+      credit_notes: optional<list<commons.CreditNoteObject>>

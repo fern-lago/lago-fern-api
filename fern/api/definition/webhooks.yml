@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+service:
+  display-name: Webhooks Service
+  auth: true
+  base-path: /webhooks/public_key
+  endpoints:
+    fetchPublicKey:
+      path: ""
+      method: GET
+      docs: Webhook public key
+      display-name: Fetch webhook public key

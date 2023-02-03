@@ -1,4 +1,543 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
 types:
-  id: string
+  BillableMetricInput:
+    properties:
+      billable_metric: optional<BillableMetricInputObject>
+
+  AggregationType:
+    enum:
+      - count_agg
+      - sum_agg
+      - max_agg
+      - unique_count_agg
+      - recurring_count_agg
+
+  BillableMetricInputObject:
+    properties:
+      name: optional<string>
+      code: optional<string>
+      description: optional<string>
+      field_name: optional<string>
+      aggregation_type: optional<AggregationType>
+      group: optional<BillableMetricGroup>
+
+  BillableMetric:
+    properties:
+      billable_metric: optional<BillableMetricObject>
+
+  BillableMetricGroup:
+    properties:
+      key: optional<string>
+      values: optional<list<unknown>>
+
+  BillableMetricObject:
+    properties:
+      lago_id: optional<string>
+      name: optional<string>
+      code: optional<string>
+      description: optional<string>
+      created_at: optional<string>
+      field_name: optional<string>
+      aggregation_type: optional<AggregationType>
+      group: optional<BillableMetricGroup>
+      active_subscriptions_count: optional<integer>
+      draft_invoices_count: optional<integer>
+
+  AddOnInput:
+    properties:
+      add_on: optional<AddOnInputObject>
+
+  AddOnInputObject:
+    properties:
+      name: optional<string>
+      code: optional<string>
+      description: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+
+  AddOn:
+    properties:
+      add_on: optional<AddOnObject>
+
+  AddOnObject:
+    properties:
+      lago_id: optional<string>
+      name: optional<string>
+      code: optional<string>
+      description: optional<string>
+      created_at: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+
+  CouponInput:
+    properties:
+      coupon: optional<CouponInputObject>
+
+  CouponType:
+    enum:
+      - fixed_amount
+      - percentage
+
+  FrequencyType:
+    enum:
+      - once
+      - recurring
+
+  ExpirationType:
+    enum:
+      - no_expiration
+      - time_limit
+
+  CouponInputObject:
+    properties:
+      name: optional<string>
+      code: optional<string>
+      coupon_type: optional<CouponType>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      reusable: optional<boolean>
+      percentage_rate: optional<double>
+      frequency: optional<FrequencyType>
+      frequency_duration: optional<integer>
+      expiration_at: optional<string>
+      expiration: optional<ExpirationType>
+
+  Coupon:
+    properties:
+      coupon: optional<CouponObject>
+
+  CouponObject:
+    properties:
+      lago_id: optional<string>
+      name: optional<string>
+      code: optional<string>
+      coupon_type: optional<CouponType>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      reusable: optional<boolean>
+      created_at: optional<string>
+      percentage_rate: optional<double>
+      frequency: optional<FrequencyType>
+      frequency_duration: optional<integer>
+      expiration_at: optional<string>
+      expiration: optional<ExpirationType>
+
+  AppliedCouponObject:
+    properties:
+      lago_id: optional<string>
+      lago_coupon_id: optional<string>
+      coupon_code: optional<string>
+      lago_customer_id: optional<string>
+      external_customer_id: optional<string>
+      status: optional<Status>
+      amount_cents: optional<integer>
+      amount_cents_remaining: optional<integer>
+      amount_currency: optional<string>
+      percentage_rate: optional<double>
+      frequency: optional<FrequencyType>
+      frequency_duration: optional<integer>
+      frequency_duration_remaining: optional<integer>
+      expiration_at: optional<string>
+      created_at: optional<string>
+      terminated_at: optional<string>
+
+  Status:
+    enum:
+      - active
+      - terminated
+
+  BillingConfigurationOrganization:
+    properties:
+      invoice_footer: optional<string>
+      invoice_grace_period: optional<integer>
+      vat_rate: optional<double>
+
+  Customer:
+    properties:
+      customer: optional<CustomerObject>
+
+  BillingConfigurationCustomer: map<string, unknown>
+
+  CustomerObject:
+    properties:
+      lago_id: optional<string>
+      external_id: optional<string>
+      name: optional<string>
+      sequential_id: optional<integer>
+      slug: optional<string>
+      created_at: optional<string>
+      country: optional<string>
+      address_line1: optional<string>
+      address_line2: optional<string>
+      state: optional<string>
+      zipode: optional<string>
+      email: optional<string>
+      city: optional<string>
+      url: optional<string>
+      phone: optional<string>
+      lago_url: optional<string>
+      legal_name: optional<string>
+      legal_number: optional<string>
+      currency: optional<string>
+      timezone: optional<string>
+      applicable_timezone: optional<string>
+      billing_configuration: optional<BillingConfigurationCustomer>
+
+  CustomerUsageObject:
+    properties:
+      from_datetime: optional<string>
+      to_datetime: optional<string>
+      issuing_date: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      total_amount_cents: optional<integer>
+      total_amount_currency: optional<string>
+      vat_amount_cents: optional<integer>
+      vat_amount_currency: optional<string>
+      charges_usage: optional<list<ChargeUsageObject>>
+
+  ChargeUsageObject:
+    properties:
+      units: optional<double>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      charge: optional<Charge>
+      billable_metric: optional<ChargeBillableMetric>
+      groups: optional<list<Group>>
+
+  ChargeModelType:
+    enum:
+      - standard
+      - graduated
+      - package
+      - percentage
+      - volume
+
+  Charge:
+    properties:
+      lago_id: optional<string>
+      charge_model:
+        docs: Charge model type
+        type: optional<ChargeModelType>
+
+  ChargeBillableMetric:
+    properties:
+      lago_id: optional<string>
+      name: optional<string>
+      code: optional<string>
+      aggregation_type: optional<AggregationType>
+
+  Group:
+    properties:
+      lago_id: optional<string>
+      key: optional<string>
+      value: optional<string>
+      units: optional<double>
+      amount_cents: optional<integer>
+
+  PlanInput:
+    properties:
+      plan: optional<PlanInputObject>
+
+  PlanInterval:
+    enum:
+      - weekly
+      - monthly
+      - yearly
+
+  ChargeModel:
+    enum:
+      - standard
+      - graduated
+      - package
+      - percentage
+      - volume
+
+  GroupProperties:
+    properties:
+      group_id: optional<string>
+      values: optional<map<string, unknown>>
+
+  Charges:
+    properties:
+      id: optional<string>
+      billable_metric_id: optional<string>
+      charge_model: optional<ChargeModel>
+      properties: optional<map<string, unknown>>
+      group_properties: optional<list<GroupProperties>>
+
+  PlanInputObject:
+    properties:
+      name: optional<string>
+      code: optional<string>
+      interval:
+        docs: Plan interval
+        type: optional<PlanInterval>
+      description: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      trial_period: optional<double>
+      pay_in_advance: optional<boolean>
+      bill_charges_monthly: optional<boolean>
+      charges: optional<list<Charges>>
+
+  Plan:
+    properties:
+      plan: optional<PlanObject>
+
+  PlanObject:
+    properties:
+      lago_id: optional<string>
+      name: optional<string>
+      created_at: optional<string>
+      code: optional<string>
+      interval: optional<PlanInterval>
+      description: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      trial_period: optional<double>
+      pay_in_advance: optional<boolean>
+      bill_charges_monthly: optional<boolean>
+      charges: optional<list<ChargeObject>>
+
+  ChargeObject:
+    properties:
+      lago_id: optional<string>
+      lago_billable_metric_id: optional<string>
+      created_at: optional<string>
+      charge_model: optional<ChargeModelType>
+      properties: optional<map<string, unknown>>
+      group_properties: optional<list<GroupPropertiesObject>>
+
+  GroupPropertiesObject:
+    properties:
+      group_id: optional<string>
+      values: optional<map<string, unknown>>
+
+  Subscription:
+    properties:
+      subscription: optional<SubscriptionObject>
+
+  SubscriptionObject:
+    properties:
+      lago_id: optional<string>
+      external_id: optional<string>
+      lago_customer_id: optional<string>
+      external_customer_id: optional<string>
+      name: optional<string>
+      plan_code: optional<string>
+      status: optional<SubscriptionStatus>
+      billing_time: optional<BillingTime>
+      subscription_at: optional<string>
+      started_at: optional<string>
+      terminated_at: optional<string>
+      canceled_at: optional<string>
+      created_at: optional<string>
+      previous_plan_code: optional<string>
+      next_plan_code: optional<string>
+      downgrade_plan_date: optional<string>
+
+  SubscriptionStatus:
+    enum:
+      - active
+      - pending
+      - terminated
+      - canceled
+
+  BillingTime:
+    enum:
+      - calendar
+      - anniversary
+
+  Invoice:
+    properties:
+      invoice: optional<InvoiceObject>
+
+  InvoiceObject:
+    properties:
+      lago_id: optional<string>
+      sequential_id: optional<integer>
+      number: optional<string>
+      issuing_date: optional<string>
+      invoice_type: optional<InvoiceType>
+      status: optional<InvoiceStatus>
+      payment_status: optional<PaymentStatus>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      vat_amount_cents: optional<integer>
+      vat_amount_currency: optional<string>
+      credit_amount_cents: optional<integer>
+      credit_amount_currency: optional<string>
+      total_amount_cents: optional<integer>
+      total_amount_currency: optional<string>
+      legacy: optional<boolean>
+      file_url: optional<string>
+      customer: optional<CustomerObject>
+      subscriptions: optional<list<SubscriptionObject>>
+      fees: optional<list<FeeObject>>
+      credits: optional<list<CreditObject>>
+
+  InvoiceStatus:
+    enum:
+      - draft
+      - finalized
+
+  PaymentStatus:
+    enum:
+      - pending
+      - succeeded
+      - failed
+
+  FeeObject:
+    properties:
+      lago_id: optional<string>
+      lago_group_id: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      vat_amount_cents: optional<integer>
+      vat_amount_currency: optional<string>
+      units: optional<double>
+      events_count: optional<integer>
+      item: optional<FeeItem>
+
+  InvoiceType:
+    enum:
+      - charge
+      - add_on
+      - subscription
+      - credit
+
+  FeeItem:
+    properties:
+      type: optional<BillingTime>
+      code: optional<string>
+      name: optional<string>
+
+  CreditObject:
+    properties:
+      lago_id: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      item: optional<CreditItem>
+
+  CreditItem:
+    properties:
+      lago_id: optional<string>
+      type: optional<string>
+      code: optional<string>
+      name: optional<string>
+
+  Wallet:
+    properties:
+      wallet: optional<WalletObject>
+
+  WalletObject:
+    properties:
+      lago_id: optional<string>
+      lago_customer_id: optional<string>
+      external_customer_id: optional<string>
+      status: optional<WalletStatus>
+      currency: optional<string>
+      name: optional<string>
+      rate_amount: optional<double>
+      credits_balance: optional<double>
+      balance: optional<double>
+      consumed_credits: optional<double>
+      created_at: optional<string>
+      expiration_at: optional<string>
+      last_balance_sync_at: optional<string>
+      last_consumed_credit_at: optional<string>
+      terminated_at: optional<string>
+
+  WalletStatus:
+    enum:
+      - active
+      - terminated
+
+  WalletTransactions:
+    properties:
+      wallet_transactions: optional<list<WalletTransactionObject>>
+
+  WalletTransactionObject:
+    properties:
+      lago_id: optional<string>
+      lago_wallet_id: optional<string>
+      status: optional<TransactionStatus>
+      transaction_type: optional<TransactionType>
+      amount: optional<double>
+      credit_amount: optional<double>
+      settled_at: optional<string>
+      created_at: optional<string>
+
+  TransactionStatus:
+    enum:
+      - pending
+      - settled
+
+  TransactionType:
+    enum:
+      - inbound
+      - outbound
+
+  CreditNote:
+    properties:
+      credit_note: optional<CreditNoteObject>
+
+  CreditNoteObject:
+    properties:
+      lago_id: optional<string>
+      sequential_id: optional<integer>
+      number: optional<string>
+      lago_invoice_id: optional<string>
+      invoice_number: optional<string>
+      issuing_date: optional<string>
+      credit_status: optional<CreditStatus>
+      refund_status: optional<RefundStatus>
+      reason: optional<CreditReason>
+      description: optional<string>
+      total_amount_cents: optional<integer>
+      total_amount_currency: optional<string>
+      vat_amount_cents: optional<integer>
+      vat_amount_currency: optional<string>
+      sub_total_vat_excluded_amount_cents: optional<integer>
+      sub_total_vat_excluded_amount_currency: optional<string>
+      balance_amount_cents: optional<integer>
+      balance_amount_currency: optional<string>
+      credit_amount_cents: optional<integer>
+      credit_amount_currency: optional<string>
+      refund_amount_cents: optional<integer>
+      refund_amount_currency: optional<string>
+      created_at: optional<string>
+      updated_at: optional<string>
+      file_url: optional<string>
+      customer: optional<CustomerObject>
+      items: optional<list<CreditNoteItemObject>>
+
+  CreditStatus:
+    enum:
+      - available
+      - consumed
+      - voided
+
+  RefundStatus:
+    enum:
+      - pending
+      - succeeded
+      - failed
+
+  CreditReason:
+    enum:
+      - duplicated_charge
+      - product_unsatisfactory
+      - order_change
+      - order_cancellation
+      - fraudulent_charge
+      - other
+
+  CreditNoteItemObject:
+    properties:
+      lago_id: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      fee: optional<FeeObject>
