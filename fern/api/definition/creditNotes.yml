@@ -14,6 +14,7 @@ service:
       docs: Create a new credit note
       display-name: Create a new Credit note
       request:
+        name: CreateCreditNoteRequest
         body: CreditNoteInput
       response: commons.CreditNote
 
@@ -69,6 +70,7 @@ service:
       docs: Find all credit notes in certain organisation
       display-name: Find Credit notes
       request:
+        name: FindAllCreditNotesRequest
         query-parameters:
           page:
             docs: Number of page
@@ -86,7 +88,7 @@ types:
     properties:
       credit_note: optional<CreditNoteInputObject>
 
-  CreditReason:
+  CreditNoteReason:
     enum:
       - duplicated_charge
       - product_unsatisfactory
@@ -95,7 +97,7 @@ types:
       - fraudulent_charge
       - other
 
-  CreditItem:
+  CreditNoteItem:
     properties:
       fee_id: optional<string>
       amount_cents: optional<integer>
@@ -103,25 +105,15 @@ types:
   CreditNoteInputObject:
     properties:
       invoice_id: optional<string>
-      reason: optional<CreditReason>
+      reason: optional<CreditNoteReason>
       description: optional<string>
       credit_amount_cents: optional<integer>
       refund_amount_cents: optional<integer>
-      items: optional<list<CreditItem>>
+      items: optional<list<CreditNoteItem>>
 
   CreditNoteUpdateInput:
     properties:
-      credit_note: optional<CreditNoteUpdateInputObject>
-
-  RefundStatus:
-    enum:
-      - pending
-      - succeeded
-      - failed
-
-  Status:
-    properties:
-      refund_status: optional<RefundStatus>
+      credit_note: optional<CreditNoteInputObject>
 
   CreditNotes:
     properties:

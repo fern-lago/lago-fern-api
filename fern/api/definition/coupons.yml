@@ -53,11 +53,12 @@ service:
       response: commons.Coupon
 
     findAllCoupons:
-      path: /coupons/
+      path: /coupons
       method: GET
       docs: Find all coupons in certain organisation
       display-name: Find Coupons
       request:
+        name: FindAllCouponsRequest
         query-parameters:
           page:
             docs: Number of page
@@ -73,15 +74,17 @@ service:
       docs: Apply a coupon to a customer
       display-name: Apply a coupon to a customer
       request:
+        name: ApplyCouponRequest
         body: AppliedCouponInput
       response: AppliedCoupon
 
     findAllAppliedCoupons:
-      path: /applied_coupons/
+      path: /applied_coupons
       method: GET
       docs: Find all applied coupons
       display-name: Find Applied Coupons
       request:
+        name: FindAllAppliedCouponsRequest
         query-parameters:
           page:
             docs: Number of page
@@ -106,16 +109,11 @@ types:
     properties:
       applied_coupon: optional<AppliedCouponInputObject>
 
-  FrequencyType:
-    enum:
-      - once
-      - recurring
-
   AppliedCouponInputObject:
     properties:
       external_customer_id: optional<string>
       coupon_code: optional<string>
-      frequency: optional<FrequencyType>
+      frequency: optional<commons.FrequencyType>
       frequency_duration: optional<integer>
       amount_cents: optional<integer>
       amount_currency: optional<string>
