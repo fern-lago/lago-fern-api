@@ -5,23 +5,21 @@ service:
   auth: true
   base-path: /events
   endpoints:
-    createEvent:
+    create:
       path: ""
       method: POST
       docs: Create a new event
       display-name: Create a new event
-      request:
-        body: EventInput
+      request: EventInput
 
     createBatchEvents:
       path: /batch
       method: POST
       docs: Create batch events
       display-name: Create batch events
-      request:
-        body: BatchEventInput
+      request: BatchEventInput
 
-    findEvent:
+    get:
       path: /{id}
       method: GET
       docs: Return a single event

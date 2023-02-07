@@ -8,7 +8,7 @@ service:
   auth: true
   base-path: /customers
   endpoints:
-    createCustomer:
+    create:
       path: ""
       method: POST
       docs: Create a new customer
@@ -16,9 +16,9 @@ service:
       request:
         name: CreateCustomerRequest
         body: CustomerInput
-      response: commons.Customer
+      response: Customer
 
-    findCustomer:
+    get:
       path: /{external_id}
       method: GET
       docs: Return a single customer
@@ -27,9 +27,9 @@ service:
         external_id:
           docs: External ID of the existing customer
           type: string
-      response: commons.Customer
+      response: Customer
 
-    findCustomerCurrentUsage:
+    getCurrentUsage:
       path: /{customer_external_id}/current_usage
       method: GET
       docs: Return a customer current usage
@@ -39,20 +39,20 @@ service:
           docs: External ID of the existing customer
           type: string
       request:
-        name: FindCustomerCurrentUsageRequest
+        name: FindCustomerCurrentUsageInput
         query-parameters:
           external_subscription_id:
             docs: External subscription ID
             type: string
       response: CustomerUsage
 
-    findAllCustomers:
+    find:
       path: ""
       method: GET
       docs: Find all customers in certain organisation
       display-name: Find customers
       request:
-        name: FindAllCustomersRequest
+        name: FindAllCustomersInput
         query-parameters:
           page:
             docs: Number of page
@@ -85,12 +85,95 @@ types:
       legal_number: optional<string>
       currency: optional<string>
       timezone: optional<string>
-      billing_configuration: optional<commons.BillingConfigurationCustomer>
+      billing_configuration: optional<BillingConfigurationCustomer>
 
   CustomerUsage:
     properties:
-      customer_usage: optional<commons.CustomerUsageObject>
+      customer_usage: optional<CustomerUsageObject>
 
   Customers:
     properties:
-      customers: optional<list<commons.CustomerObject>>
+      customers: optional<list<CustomerObject>>
+
+  Customer:
+    properties:
+      customer: optional<CustomerObject>
+
+  BillingConfigurationCustomer: map<string, unknown>
+
+  CustomerObject:
+    properties:
+      lago_id: optional<string>
+      external_id: optional<string>
+      name: optional<string>
+      sequential_id: optional<integer>
+      slug: optional<string>
+      created_at: optional<string>
+      country: optional<string>
+      address_line1: optional<string>
+      address_line2: optional<string>
+      state: optional<string>
+      zipode: optional<string>
+      email: optional<string>
+      city: optional<string>
+      url: optional<string>
+      phone: optional<string>
+      lago_url: optional<string>
+      legal_name: optional<string>
+      legal_number: optional<string>
+      currency: optional<string>
+      timezone: optional<string>
+      applicable_timezone: optional<string>
+      billing_configuration: optional<BillingConfigurationCustomer>
+
+  CustomerUsageObject:
+    properties:
+      from_datetime: optional<string>
+      to_datetime: optional<string>
+      issuing_date: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      total_amount_cents: optional<integer>
+      total_amount_currency: optional<string>
+      vat_amount_cents: optional<integer>
+      vat_amount_currency: optional<string>
+      charges_usage: optional<list<ChargeUsageObject>>
+
+  ChargeUsageObject:
+    properties:
+      units: optional<double>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      charge: optional<Charge>
+      billable_metric: optional<ChargeBillableMetric>
+      groups: optional<list<Group>>
+
+  ChargeModelType:
+    enum:
+      - standard
+      - graduated
+      - package
+      - percentage
+      - volume
+
+  Charge:
+    properties:
+      lago_id: optional<string>
+      charge_model:
+        docs: Charge model type
+        type: optional<ChargeModelType>
+
+  ChargeBillableMetric:
+    properties:
+      lago_id: optional<string>
+      name: optional<string>
+      code: optional<string>
+      aggregation_type: optional<commons.AggregationType>
+
+  Group:
+    properties:
+      lago_id: optional<string>
+      key: optional<string>
+      value: optional<string>
+      units: optional<double>
+      amount_cents: optional<integer>

@@ -8,17 +8,15 @@ service:
   auth: true
   base-path: /billable_metrics
   endpoints:
-    createBillableMetric:
+    create:
       path: ""
       method: POST
       docs: Create a new billable metric
       display-name: Create a new billable metric
-      request:
-        name: CreateBillableMetricRequest
-        body: commons.BillableMetricInput
-      response: commons.BillableMetric
+      request: BillableMetricInput
+      response: BillableMetric
 
-    findBillableMetric:
+    get:
       path: /{code}
       method: GET
       docs: Return a single billable metric
@@ -27,9 +25,9 @@ service:
         code:
           docs: Code of the existing billable metric
           type: string
-      response: commons.BillableMetric
+      response: BillableMetric
 
-    updateBillableMetric:
+    update:
       path: /{code}
       method: PUT
       docs: Update an existing billable metric by code
@@ -38,12 +36,10 @@ service:
         code:
           docs: Code of the existing billable metric
           type: string
-      request:
-        name: UpdateBillableMetricRequest
-        body: commons.BillableMetricInput
-      response: commons.BillableMetric
+      request: BillableMetricInput
+      response: BillableMetric
 
-    destroyBillableMetric:
+    destroy:
       path: /{code}
       method: DELETE
       docs: Delete a billable metric
@@ -52,15 +48,15 @@ service:
         code:
           docs: Code of the existing billable metric
           type: string
-      response: commons.BillableMetric
+      response: BillableMetric
 
-    findAllBillableMetrics:
+    findMetrics:
       path: ""
       method: GET
       docs: Find all billable metrics in certain organisation
       display-name: Find Billable metrics
       request:
-        name: FindAllBillableMetrics
+        name: FindAllBillableMetricsInput
         query-parameters:
           page:
             docs: Number of page
@@ -70,7 +66,7 @@ service:
             type: optional<integer>
       response: BillableMetrics
 
-    findAllBillableMetricGroups:
+    findMetricGroups:
       path: /{code}/groups
       method: GET
       docs: Find all billable metric groups in certain organisation
@@ -80,7 +76,7 @@ service:
           docs: Code of the existing billable metric
           type: string
       request:
-        name: FindAllBillableMetricGroups
+        name: FindAllBillableMetricGroupsInput
         query-parameters:
           page:
             docs: Number of page
@@ -93,7 +89,7 @@ service:
 types:
   BillableMetrics:
     properties:
-      billable_metrics: optional<list<commons.BillableMetricObject>>
+      billable_metrics: optional<list<BillableMetricObject>>
 
   Groups:
     properties:
@@ -104,3 +100,38 @@ types:
       key: optional<string>
       value: optional<string>
       lago_id: optional<string>
+
+  BillableMetricInput:
+    properties:
+      billable_metric: optional<BillableMetricInputObject>
+
+  BillableMetricInputObject:
+    properties:
+      name: optional<string>
+      code: optional<string>
+      description: optional<string>
+      field_name: optional<string>
+      aggregation_type: optional<commons.AggregationType>
+      group: optional<BillableMetricGroup>
+
+  BillableMetric:
+    properties:
+      billable_metric: optional<BillableMetricObject>
+
+  BillableMetricGroup:
+    properties:
+      key: optional<string>
+      values: optional<list<unknown>>
+
+  BillableMetricObject:
+    properties:
+      lago_id: optional<string>
+      name: optional<string>
+      code: optional<string>
+      description: optional<string>
+      created_at: optional<string>
+      field_name: optional<string>
+      aggregation_type: optional<commons.AggregationType>
+      group: optional<BillableMetricGroup>
+      active_subscriptions_count: optional<integer>
+      draft_invoices_count: optional<integer>

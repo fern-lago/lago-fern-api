@@ -1,14 +1,16 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
 imports:
+  customers: customers.yml
   commons: commons.yml
+  subscriptions: subscriptions.yml
 
 service:
   display-name: Invoices Service
   auth: true
   base-path: /invoices
   endpoints:
-    findInvoice:
+    get:
       path: /{id}
       method: GET
       docs: Return a single invoice
@@ -17,9 +19,9 @@ service:
         id:
           docs: ID of the existing Lago Invoice
           type: string
-      response: commons.Invoice
+      response: Invoice
 
-    updateInvoice:
+    update:
       path: /{id}
       method: PUT
       docs: Update an existing invoice
@@ -28,11 +30,10 @@ service:
         id:
           docs: ID of the existing Lago Invoice
           type: string
-      request:
-        body: InvoiceInput
-      response: commons.Invoice
+      request: InvoiceInput
+      response: Invoice
 
-    downloadInvoice:
+    download:
       path: /{id}/download
       method: POST
       docs: Download an existing invoice
@@ -41,7 +42,7 @@ service:
         id:
           docs: ID of the existing Lago Invoice
           type: string
-      response: commons.Invoice
+      response: Invoice
 
     retryPayment:
       path: /{id}/retry_payment
@@ -62,9 +63,9 @@ service:
         id:
           docs: ID of the existing Lago Invoice
           type: string
-      response: commons.Invoice
+      response: Invoice
 
-    finalizeInvoice:
+    finalize:
       path: /{id}/finalize
       method: PUT
       docs: Finalize a draft invoice
@@ -73,9 +74,9 @@ service:
         id:
           docs: ID of the draft Lago Invoice
           type: string
-      response: commons.Invoice
+      response: Invoice
 
-    findAllInvoices:
+    find:
       path: ""
       method: GET
       docs: Find all invoices in certain organisation
@@ -92,14 +93,74 @@ service:
           external_customer_id: optional<string>
           issuing_date_from: optional<string>
           issuing_date_to: optional<string>
-          status: optional<commons.InvoiceStatus>
+          status: optional<InvoiceStatus>
       response: Invoices
 
 types:
   InvoiceInput:
     properties:
-      invoice: optional<commons.InvoiceObject>
+      invoice: optional<InvoiceObject>
 
   Invoices:
     properties:
-      invoices: optional<list<commons.InvoiceObject>>
+      invoices: optional<list<InvoiceObject>>
+
+  Invoice:
+    properties:
+      invoice: optional<InvoiceObject>
+
+  InvoiceObject:
+    properties:
+      lago_id: optional<string>
+      sequential_id: optional<integer>
+      number: optional<string>
+      issuing_date: optional<string>
+      invoice_type: optional<InvoiceType>
+      status: optional<InvoiceStatus>
+      payment_status: optional<PaymentStatus>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      vat_amount_cents: optional<integer>
+      vat_amount_currency: optional<string>
+      credit_amount_cents: optional<integer>
+      credit_amount_currency: optional<string>
+      total_amount_cents: optional<integer>
+      total_amount_currency: optional<string>
+      legacy: optional<boolean>
+      file_url: optional<string>
+      customer: optional<customers.CustomerObject>
+      subscriptions: optional<list<subscriptions.SubscriptionObject>>
+      fees: optional<list<commons.FeeObject>>
+      credits: optional<list<CreditObject>>
+
+  InvoiceStatus:
+    enum:
+      - draft
+      - finalized
+
+  PaymentStatus:
+    enum:
+      - pending
+      - succeeded
+      - failed
+
+  InvoiceType:
+    enum:
+      - charge
+      - add_on
+      - subscription
+      - credit
+
+  CreditObject:
+    properties:
+      lago_id: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      item: optional<CreditItem>
+
+  CreditItem:
+    properties:
+      lago_id: optional<string>
+      type: optional<string>
+      code: optional<string>
+      name: optional<string>

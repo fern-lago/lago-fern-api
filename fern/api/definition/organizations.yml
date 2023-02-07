@@ -1,14 +1,11 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
-imports:
-  commons: commons.yml
-
 service:
   display-name: Organizations Service
   auth: true
   base-path: /organizations
   endpoints:
-    updateOrganization:
+    update:
       path: ""
       method: PUT
       docs: Update an existing organization
@@ -35,7 +32,7 @@ types:
       legal_name: optional<string>
       legal_number: optional<string>
       timezone: optional<string>
-      billing_configuration: optional<commons.BillingConfigurationOrganization>
+      billing_configuration: optional<BillingConfigurationOrganization>
 
   Organization:
     properties:
@@ -57,4 +54,10 @@ types:
       legal_name: optional<string>
       legal_number: optional<string>
       timezone: optional<string>
-      billing_configuration: optional<commons.BillingConfigurationOrganization>
+      billing_configuration: optional<BillingConfigurationOrganization>
+
+  BillingConfigurationOrganization:
+    properties:
+      invoice_footer: optional<string>
+      invoice_grace_period: optional<integer>
+      vat_rate: optional<double>
