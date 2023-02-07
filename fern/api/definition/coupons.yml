@@ -1,23 +1,22 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
 imports:
-  commons: commons.yml
+  coupons: coupons.yml
 
 service:
   display-name: Coupons Service
   auth: true
   base-path: ""
   endpoints:
-    createCoupon:
+    create:
       path: /coupons
       method: POST
       docs: Create a new coupon
       display-name: Create a new coupon
-      request:
-        body: commons.CouponInput
-      response: commons.Coupon
+      request: CouponInput
+      response: Coupon
 
-    findCoupon:
+    get:
       path: /coupons/{code}
       method: GET
       docs: Return a single coupon
@@ -26,9 +25,9 @@ service:
         code:
           docs: Code of the existing coupon
           type: string
-      response: commons.Coupon
+      response: Coupon
 
-    updateCoupon:
+    update:
       path: /coupons/{code}
       method: PUT
       docs: Update an existing coupon by code
@@ -38,10 +37,10 @@ service:
           docs: Code of the existing coupon
           type: string
       request:
-        body: commons.CouponInput
-      response: commons.Coupon
+        body: CouponInput
+      response: Coupon
 
-    destroyCoupon:
+    destroy:
       path: /coupons/{code}
       method: DELETE
       docs: Delete a coupon
@@ -50,9 +49,9 @@ service:
         code:
           docs: Code of the existing coupon
           type: string
-      response: commons.Coupon
+      response: Coupon
 
-    findAllCoupons:
+    find:
       path: /coupons
       method: GET
       docs: Find all coupons in certain organisation
@@ -68,14 +67,12 @@ service:
             type: optional<integer>
       response: Coupons
 
-    applyCoupon:
+    apply:
       path: /applied_coupons
       method: POST
       docs: Apply a coupon to a customer
       display-name: Apply a coupon to a customer
-      request:
-        name: ApplyCouponRequest
-        body: AppliedCouponInput
+      request: AppliedCouponInput
       response: AppliedCoupon
 
     findAllAppliedCoupons:
@@ -84,7 +81,7 @@ service:
       docs: Find all applied coupons
       display-name: Find Applied Coupons
       request:
-        name: FindAllAppliedCouponsRequest
+        name: FindAllAppliedCouponsInput
         query-parameters:
           page:
             docs: Number of page
@@ -103,7 +100,7 @@ service:
 types:
   Coupons:
     properties:
-      coupons: optional<list<commons.CouponObject>>
+      coupons: optional<list<CouponObject>>
 
   AppliedCouponInput:
     properties:
@@ -113,7 +110,7 @@ types:
     properties:
       external_customer_id: optional<string>
       coupon_code: optional<string>
-      frequency: optional<commons.FrequencyType>
+      frequency: optional<FrequencyType>
       frequency_duration: optional<integer>
       amount_cents: optional<integer>
       amount_currency: optional<string>
@@ -121,13 +118,85 @@ types:
 
   AppliedCoupon:
     properties:
-      applied_coupon: optional<commons.AppliedCouponObject>
+      applied_coupon: optional<AppliedCouponObject>
 
   AppliedCoupons:
     properties:
-      applied_coupons: optional<list<commons.AppliedCouponObject>>
+      applied_coupons: optional<list<AppliedCouponObject>>
 
   CouponStatus:
     enum:
       - active
       - terminated
+
+  CouponInput:
+    properties:
+      coupon: optional<CouponInputObject>
+
+  CouponType:
+    enum:
+      - fixed_amount
+      - percentage
+
+  FrequencyType:
+    enum:
+      - once
+      - recurring
+
+  ExpirationType:
+    enum:
+      - no_expiration
+      - time_limit
+
+  CouponInputObject:
+    properties:
+      name: optional<string>
+      code: optional<string>
+      coupon_type: optional<CouponType>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      reusable: optional<boolean>
+      percentage_rate: optional<double>
+      frequency: optional<FrequencyType>
+      frequency_duration: optional<integer>
+      expiration_at: optional<string>
+      expiration: optional<ExpirationType>
+
+  Coupon:
+    properties:
+      coupon: optional<CouponObject>
+
+  CouponObject:
+    properties:
+      lago_id: optional<string>
+      name: optional<string>
+      code: optional<string>
+      coupon_type: optional<CouponType>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      reusable: optional<boolean>
+      created_at: optional<string>
+      percentage_rate: optional<double>
+      frequency: optional<FrequencyType>
+      frequency_duration: optional<integer>
+      expiration_at: optional<string>
+      expiration: optional<ExpirationType>
+
+  AppliedCouponObject:
+    properties:
+      lago_id: optional<string>
+      lago_coupon_id: optional<string>
+      coupon_code: optional<string>
+      lago_customer_id: optional<string>
+      external_customer_id: optional<string>
+      status: optional<CouponStatus>
+      amount_cents: optional<integer>
+      amount_cents_remaining: optional<integer>
+      amount_currency: optional<string>
+      percentage_rate: optional<double>
+      frequency: optional<FrequencyType>
+      frequency_duration: optional<integer>
+      frequency_duration_remaining: optional<integer>
+      expiration_at: optional<string>
+      created_at: optional<string>
+      terminated_at: optional<string>

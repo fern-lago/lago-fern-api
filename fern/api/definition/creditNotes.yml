@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
 imports:
+  customers: customers.yml
   commons: commons.yml
 
 service:
@@ -8,17 +9,15 @@ service:
   auth: true
   base-path: /credit_notes
   endpoints:
-    createCreditNote:
+    create:
       path: ""
       method: POST
       docs: Create a new credit note
       display-name: Create a new Credit note
-      request:
-        name: CreateCreditNoteRequest
-        body: CreditNoteInput
-      response: commons.CreditNote
+      request: CreditNoteInput
+      response: CreditNote
 
-    findCreditNote:
+    get:
       path: /{id}
       method: GET
       docs: Return a single credit note
@@ -27,9 +26,9 @@ service:
         id:
           docs: Id of the existing credit note
           type: string
-      response: commons.CreditNote
+      response: CreditNote
 
-    updateCreditNote:
+    update:
       path: /{id}
       method: PUT
       docs: Update an existing credit note
@@ -38,11 +37,10 @@ service:
         id:
           docs: Id of the existing credit note
           type: string
-      request:
-        body: CreditNoteUpdateInput
-      response: commons.CreditNote
+      request: CreditNoteUpdateInput
+      response: CreditNote
 
-    downloadCreditNote:
+    download:
       path: /{id}/download
       method: POST
       docs: Download an existing credit note
@@ -51,7 +49,7 @@ service:
         id:
           docs: ID of the existing Lago Credit note
           type: string
-      response: commons.CreditNote
+      response: CreditNote
 
     voidCreditNote:
       path: /{id}/void
@@ -62,15 +60,15 @@ service:
         id:
           docs: ID of the existing Lago Credit note
           type: string
-      response: commons.CreditNote
+      response: CreditNote
 
-    findAllCreditNotes:
+    find:
       path: ""
       method: GET
       docs: Find all credit notes in certain organisation
       display-name: Find Credit notes
       request:
-        name: FindAllCreditNotesRequest
+        name: FindAllCreditNotesInput
         query-parameters:
           page:
             docs: Number of page
@@ -117,4 +115,66 @@ types:
 
   CreditNotes:
     properties:
-      credit_notes: optional<list<commons.CreditNoteObject>>
+      credit_notes: optional<list<CreditNoteObject>>
+
+  CreditNote:
+    properties:
+      credit_note: optional<CreditNoteObject>
+
+  CreditNoteObject:
+    properties:
+      lago_id: optional<string>
+      sequential_id: optional<integer>
+      number: optional<string>
+      lago_invoice_id: optional<string>
+      invoice_number: optional<string>
+      issuing_date: optional<string>
+      credit_status: optional<CreditStatus>
+      refund_status: optional<RefundStatus>
+      reason: optional<CreditReason>
+      description: optional<string>
+      total_amount_cents: optional<integer>
+      total_amount_currency: optional<string>
+      vat_amount_cents: optional<integer>
+      vat_amount_currency: optional<string>
+      sub_total_vat_excluded_amount_cents: optional<integer>
+      sub_total_vat_excluded_amount_currency: optional<string>
+      balance_amount_cents: optional<integer>
+      balance_amount_currency: optional<string>
+      credit_amount_cents: optional<integer>
+      credit_amount_currency: optional<string>
+      refund_amount_cents: optional<integer>
+      refund_amount_currency: optional<string>
+      created_at: optional<string>
+      updated_at: optional<string>
+      file_url: optional<string>
+      customer: optional<customers.CustomerObject>
+      items: optional<list<CreditNoteItemObject>>
+
+  CreditStatus:
+    enum:
+      - available
+      - consumed
+      - voided
+
+  RefundStatus:
+    enum:
+      - pending
+      - succeeded
+      - failed
+
+  CreditReason:
+    enum:
+      - duplicated_charge
+      - product_unsatisfactory
+      - order_change
+      - order_cancellation
+      - fraudulent_charge
+      - other
+
+  CreditNoteItemObject:
+    properties:
+      lago_id: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      fee: optional<commons.FeeObject>

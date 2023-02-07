@@ -8,17 +8,15 @@ service:
   auth: true
   base-path: /subscriptions
   endpoints:
-    createSubscription:
+    create:
       path: ""
       method: POST
       docs: Assign a plan to a customer
       display-name: Assign a plan to a customer
-      request:
-        name: CreateSubscriptionRequest
-        body: SubscriptionCreateInput
-      response: commons.Subscription
+      request: SubscriptionCreateInput
+      response: Subscription
 
-    updateSubscription:
+    update:
       path: /{external_id}
       method: PUT
       docs: Update an existing subscription by external ID
@@ -27,12 +25,10 @@ service:
         external_id:
           docs: External ID of the existing subscription
           type: string
-      request:
-        name: UpdateSubscriptionRequest
-        body: SubscriptionUpdateInput
-      response: commons.Subscription
+      request: SubscriptionUpdateInput
+      response: Subscription
 
-    destroySubscription:
+    delete:
       path: /{external_id}
       method: DELETE
       docs: Terminate a subscription
@@ -41,15 +37,15 @@ service:
         external_id:
           docs: External ID of the existing subscription
           type: string
-      response: commons.Subscription
+      response: Subscription
 
-    findAllSubscriptions:
+    find:
       path: ""
       method: GET
       docs: Find all suscriptions for certain customer
       display-name: Find subscriptions
       request:
-        name: FindAllSubscriptionsRequest
+        name: FindAllSubscriptionsInput
         query-parameters:
           page:
             docs: Number of page
@@ -87,4 +83,34 @@ types:
 
   Subscriptions:
     properties:
-      subscriptions: optional<list<commons.SubscriptionObject>>
+      subscriptions: optional<list<SubscriptionObject>>
+
+  Subscription:
+    properties:
+      subscription: optional<SubscriptionObject>
+
+  SubscriptionObject:
+    properties:
+      lago_id: optional<string>
+      external_id: optional<string>
+      lago_customer_id: optional<string>
+      external_customer_id: optional<string>
+      name: optional<string>
+      plan_code: optional<string>
+      status: optional<SubscriptionStatus>
+      billing_time: optional<commons.BillingTime>
+      subscription_at: optional<string>
+      started_at: optional<string>
+      terminated_at: optional<string>
+      canceled_at: optional<string>
+      created_at: optional<string>
+      previous_plan_code: optional<string>
+      next_plan_code: optional<string>
+      downgrade_plan_date: optional<string>
+
+  SubscriptionStatus:
+    enum:
+      - active
+      - pending
+      - terminated
+      - canceled

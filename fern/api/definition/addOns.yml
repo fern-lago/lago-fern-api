@@ -1,24 +1,19 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
-imports:
-  commons: commons.yml
-
 service:
   display-name: Add-ons Service
   auth: true
   base-path: ""
   endpoints:
-    createAddOn:
+    create:
       path: /add_ons
       method: POST
       docs: Create a new add-on
       display-name: Create a new add-on
-      request:
-        name: CreateAddOnRequest
-        body: commons.AddOnInput
-      response: commons.AddOn
+      request: AddOnInput
+      response: AddOn
 
-    findAddOn:
+    get:
       path: /add_ons/{code}
       method: GET
       docs: Return a single add-on
@@ -27,9 +22,9 @@ service:
         code:
           docs: Code of the existing add-on
           type: string
-      response: commons.AddOn
+      response: AddOn
 
-    updateAddOn:
+    update:
       path: /add_ons/{code}
       method: PUT
       docs: Update an existing add-on by code
@@ -38,12 +33,10 @@ service:
         code:
           docs: Code of the existing add-on
           type: string
-      request:
-        name: UpdateAddOnRequest
-        body: commons.AddOnInput
-      response: commons.AddOn
+      request: AddOnInput
+      response: AddOn
 
-    destroyAddOn:
+    destroy:
       path: /add_ons/{code}
       method: DELETE
       docs: Delete an add-on
@@ -52,15 +45,15 @@ service:
         code:
           docs: Code of the existing add-on
           type: string
-      response: commons.AddOn
+      response: AddOn
 
-    findAllAddOns:
+    find:
       path: /add_ons
       method: GET
       docs: Find all add-ons in certain organisation
       display-name: Find add-ons
       request:
-        name: FindAllAddOnsRequest
+        name: FindAllAddOnsInput
         query-parameters:
           page:
             docs: Number of page
@@ -70,29 +63,53 @@ service:
             type: optional<integer>
       response: AddOns
 
-    applyAddOn:
+    apply:
       path: /applied_add_ons
       method: POST
       docs: Apply an add-on to a customer
       display-name: Apply an add-on to a customer
       request:
-        name: ApplyAddOnRequest
-        body: AppliedAddOnInput
+        name: ApplyAddOnInput
+        body:
+          properties:
+            applied_add_on: optional<AppliedAddOnInputObject>
       response: AppliedAddOn
 
 types:
   AddOns:
     properties:
-      add_ons: optional<list<commons.AddOnObject>>
-
-  AppliedAddOnInput:
-    properties:
-      applied_add_on: optional<AppliedAddOnInputObject>
+      add_ons: optional<list<AddOnObject>>
 
   AppliedAddOnInputObject:
     properties:
       external_customer_id: optional<string>
       add_on_code: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+
+  AddOnInput:
+    properties:
+      add_on: optional<AddOnInputObject>
+
+  AddOnInputObject:
+    properties:
+      name: optional<string>
+      code: optional<string>
+      description: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+
+  AddOn:
+    properties:
+      add_on: optional<AddOnObject>
+
+  AddOnObject:
+    properties:
+      lago_id: optional<string>
+      name: optional<string>
+      code: optional<string>
+      description: optional<string>
+      created_at: optional<string>
       amount_cents: optional<integer>
       amount_currency: optional<string>
 
