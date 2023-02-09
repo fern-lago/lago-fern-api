@@ -198,7 +198,9 @@ types:
   BillableMetricObject:
     properties:
       lago_id: optional<string>
-      name: optional<string>
+      name: 
+        type: optional<string>
+        docs: The name of the billable metric.
       code: optional<string>
       description: optional<string>
       created_at: optional<string>
