@@ -3,8 +3,10 @@
 Tagging a release on this repository will update the:
 
 - [Node.js SDK repo](https://github.com/fern-lago/lago-node)
-- [OpenAPI spec repo](https://github.com/fern-lago/lago-openapi)
+- [Java SDK repo](https://github.com/fern-lago/lago-node)
 - [Postman collection repo](https://github.com/fern-lago/lago-postman)
+- [Docs](https://github.com/fern-lago/docs)
+- [OpenAPI spec repo](https://github.com/fern-lago/lago-openapi)
 - _More SDKs to come..._
 
 ## What is in this repository?
