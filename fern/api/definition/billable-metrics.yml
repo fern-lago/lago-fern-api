@@ -15,10 +15,10 @@ service:
       display-name: Create a new billable metric
       request: BillableMetricInput
       response: BillableMetric
-      examples: 
-        - request: $BillableMetricInput.Example0
-          response: 
-            body: $BillableMetric.Example0
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.UnprocessableEntityError
 
     get:
       path: /{code}
@@ -30,6 +30,10 @@ service:
           docs: Code of the existing billable metric
           type: string
       response: BillableMetric
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.NotFoundError
       examples: 
         - path-parameters:
             code: code
@@ -47,6 +51,11 @@ service:
           type: string
       request: BillableMetricInput
       response: BillableMetric
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+        - commons.UnprocessableEntityError
       examples: 
         - path-parameters:
             code: code
@@ -64,6 +73,9 @@ service:
           docs: Code of the existing billable metric
           type: string
       response: BillableMetric
+      errors:
+        - commons.UnauthorizedError
+        - commons.NotFoundError
       examples: 
         - path-parameters:
             code: code
@@ -85,6 +97,8 @@ service:
             docs: Number of records per page
             type: optional<integer>
       response: BillableMetrics
+      errors:
+        - commons.UnauthorizedError
       examples: 
         - query-parameters:
             page: 3
@@ -119,6 +133,8 @@ service:
             per_page: 2
           response: 
             body: $Groups.Example0
+      errors:
+        - commons.UnauthorizedError
 
 types:
   BillableMetrics:
@@ -222,3 +238,4 @@ types:
           group: {}
           active_subscriptions_count: 0
           draft_invoices_count: 0
+

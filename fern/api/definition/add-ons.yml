@@ -1,5 +1,8 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
+imports:
+  commons: commons.yml 
+
 service:
   display-name: Add-ons Service
   auth: true
@@ -16,6 +19,10 @@ service:
         - request: $AddOnInput.Example0
           response: 
             body: $AddOn.Example0
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.UnprocessableEntityError
 
     get:
       path: /add_ons/{code}
@@ -32,6 +39,9 @@ service:
             code: code
           response: 
             body: $AddOn.Example0
+      errors:
+        - commons.UnauthorizedError
+        - commons.NotFoundError
 
     update:
       path: /add_ons/{code}
@@ -50,6 +60,11 @@ service:
           request: $AddOnInput.Example0
           response: 
             body: $AddOn.Example0
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+        - commons.UnprocessableEntityError
 
     destroy:
       path: /add_ons/{code}
@@ -66,6 +81,11 @@ service:
             code: code
           response: 
             body: $AddOn.Example0
+      errors: 
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+        - commons.UnprocessableEntityError
 
     find:
       path: /add_ons

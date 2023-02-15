@@ -31,3 +31,39 @@ types:
       - max_agg
       - unique_count_agg
       - recurring_count_agg
+  
+  ErrorBody: 
+    properties:
+      status: integer 
+      error: string 
+
+  ErrorBodyWithCode: 
+    extends: ErrorBody 
+    properties:
+      code: string 
+
+errors:
+  BadRequestError:
+    status-code: 400
+    type: ErrorBody
+    docs: Data (json) form the root is not present in the request body.
+
+  UnauthorizedError:  
+    status-code: 401
+    type: ErrorBody
+    docs: Access to the endpoint is unauthorized. 
+      Check your headers and ensure the API key is valid and hasn't expired.
+
+  NotFoundError:
+    status-code: 404
+    type: ErrorBodyWithCode
+    docs: The resource was not found.
+
+  UnprocessableEntityError:
+    status-code: 422
+    type: ErrorBody
+    docs: There are validation errors, such as mandatory fields missing values.
+
+  MethodNotAllowed: 
+    status-code: 405
+    type: ErrorBodyWithCode

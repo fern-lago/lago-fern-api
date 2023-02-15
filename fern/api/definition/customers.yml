@@ -17,6 +17,10 @@ service:
         name: CreateCustomerRequest
         body: CustomerInput
       response: Customer
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.UnprocessableEntityError
 
     get:
       path: /{external_id}
@@ -28,24 +32,10 @@ service:
           docs: External ID of the existing customer
           type: string
       response: Customer
-
-    getCurrentUsage:
-      path: /{customer_external_id}/current_usage
-      method: GET
-      docs: Return a customer current usage
-      display-name: Find customer current usage
-      path-parameters:
-        customer_external_id:
-          docs: External ID of the existing customer
-          type: string
-      request:
-        name: FindCustomerCurrentUsageInput
-        query-parameters:
-          external_subscription_id:
-            docs: External subscription ID
-            type: string
-      response: CustomerUsage
-
+      errors:
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+      
     find:
       path: ""
       method: GET
@@ -61,6 +51,8 @@ service:
             docs: Number of records per page
             type: optional<integer>
       response: Customers
+      errors:
+        - commons.UnauthorizedError
 
 types:
   CustomerInput:
@@ -90,6 +82,19 @@ types:
   CustomerUsage:
     properties:
       customer_usage: optional<CustomerUsageObject>
+  
+  CustomerUsageObject:
+    properties:
+      from_datetime: optional<string>
+      to_datetime: optional<string>
+      issuing_date: optional<string>
+      amount_cents: optional<integer>
+      amount_currency: optional<string>
+      total_amount_cents: optional<integer>
+      total_amount_currency: optional<string>
+      vat_amount_cents: optional<integer>
+      vat_amount_currency: optional<string>
+      charges_usage: optional<list<ChargeUsageObject>>
 
   Customers:
     properties:
@@ -125,20 +130,6 @@ types:
       timezone: optional<string>
       applicable_timezone: optional<string>
       billing_configuration: optional<BillingConfigurationCustomer>
-
-  CustomerUsageObject:
-    properties:
-      from_datetime: optional<string>
-      to_datetime: optional<string>
-      issuing_date: optional<string>
-      amount_cents: optional<integer>
-      amount_currency: optional<string>
-      total_amount_cents: optional<integer>
-      total_amount_currency: optional<string>
-      vat_amount_cents: optional<integer>
-      vat_amount_currency: optional<string>
-      charges_usage: optional<list<ChargeUsageObject>>
-
   ChargeUsageObject:
     properties:
       units: optional<double>
@@ -169,7 +160,7 @@ types:
       name: optional<string>
       code: optional<string>
       aggregation_type: optional<commons.AggregationType>
-
+  
   Group:
     properties:
       lago_id: optional<string>

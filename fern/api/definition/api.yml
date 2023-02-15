@@ -5,3 +5,5 @@ environments:
   Production: https://api.getlago.com/api/v1
   Sandbox: https://sandbox.example.com
 default-environment: Production
+error-discrimination:
+  strategy: status-code

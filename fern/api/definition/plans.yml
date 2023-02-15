@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
 imports:
+  commons: commons.yml
   customers: customers.yml
 
 service:
@@ -15,6 +16,11 @@ service:
       display-name: Create a new plan
       request: PlanInput
       response: Plan
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+        - commons.UnprocessableEntityError
 
     get:
       path: /{code}
@@ -26,6 +32,9 @@ service:
           docs: Code of the existing plan
           type: string
       response: Plan
+      errors:
+        - commons.UnauthorizedError
+        - commons.NotFoundError
 
     update:
       path: /{code}
@@ -38,6 +47,11 @@ service:
           type: string
       request: PlanInput
       response: Plan
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+        - commons.UnprocessableEntityError
 
     destroy:
       path: /{code}
@@ -49,6 +63,9 @@ service:
           docs: Code of the existing plan
           type: string
       response: Plan
+      errors:
+        - commons.UnauthorizedError
+        - commons.NotFoundError
 
     find:
       path: ""
@@ -65,6 +82,8 @@ service:
             docs: Number of records per page
             type: optional<integer>
       response: Plans
+      errors:
+        - commons.UnauthorizedError
 
 types:
   Plans:

@@ -1,5 +1,8 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
+imports:
+  commons: commons.yml 
+
 service:
   display-name: Events Service
   auth: true
@@ -11,6 +14,16 @@ service:
       docs: Create a new event
       display-name: Create a new event
       request: EventInput
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.UnprocessableEntityError
+      examples: 
+        - request: 
+            event: 
+              transaction_id: tx_01234abcd
+              external_customer_id: auth0_b201k
+
 
     createBatchEvents:
       path: /batch
@@ -18,6 +31,10 @@ service:
       docs: Create batch events
       display-name: Create batch events
       request: BatchEventInput
+      errors:
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+        - commons.UnprocessableEntityError
 
     get:
       path: /{id}
@@ -29,6 +46,24 @@ service:
           docs: Id of the existing transaction
           type: string
       response: Event
+      errors:
+        - commons.UnauthorizedError
+        - commons.UnprocessableEntityError
+
+      examples:
+        - path-parameters:
+            id: tx_01234abcd
+          response: 
+            body: 
+              event:
+                transaction_id: __UNIQUE_ID__
+                external_customer_id: __CUSTOMER_ID__
+                external_subscription_id: __SUBSCRIPTION_ID__
+                code: __EVENT_CODE__
+                timestamp: 1650893379
+                properties:
+                  custom_field: 12
+
 
 types:
   EventInput:
@@ -68,7 +103,7 @@ types:
       lago_customer_id: optional<string>
       external_customer_id: optional<string>
       code: optional<string>
-      timestamp: optional<string>
+      timestamp: optional<integer>
       properties: optional<map<string, unknown>>
       lago_subscription_id: optional<string>
       external_subscription_id: optional<string>
