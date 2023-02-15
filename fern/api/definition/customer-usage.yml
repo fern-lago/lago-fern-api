@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+  customers: customers.yml
+
+service:
+  display-name: Billable Metrics Service
+  auth: true
+  base-path: /billable_metrics
+  endpoints:
+    getCurrentUsage:
+      path: /{customer_external_id}/current_usage
+      method: GET
+      docs: Return a customer current usage
+      display-name: Find customer current usage
+      path-parameters:
+        customer_external_id:
+          docs: External ID of the existing customer
+          type: string
+      request:
+        name: FindCustomerCurrentUsageInput
+        query-parameters:
+          external_subscription_id:
+            docs: External subscription ID
+            type: string
+      response: customers.CustomerUsage
+      errors:
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+        - commons.MethodNotAllowed

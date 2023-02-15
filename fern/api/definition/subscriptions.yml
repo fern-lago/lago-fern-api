@@ -11,10 +11,14 @@ service:
     create:
       path: ""
       method: POST
-      docs: Assign a plan to a customer
       display-name: Assign a plan to a customer
       request: SubscriptionCreateInput
       response: Subscription
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+        - commons.UnprocessableEntityError
 
     update:
       path: /{external_id}
@@ -27,6 +31,10 @@ service:
           type: string
       request: SubscriptionUpdateInput
       response: Subscription
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.NotFoundError
 
     delete:
       path: /{external_id}
@@ -38,6 +46,9 @@ service:
           docs: External ID of the existing subscription
           type: string
       response: Subscription
+      errors:
+        - commons.UnauthorizedError
+        - commons.NotFoundError
 
     find:
       path: ""
@@ -57,6 +68,9 @@ service:
             docs: External customer ID
             type: string
       response: Subscriptions
+      errors:
+        - commons.UnauthorizedError
+        - commons.NotFoundError
 
 types:
   SubscriptionCreateInput:
