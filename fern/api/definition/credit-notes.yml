@@ -16,6 +16,15 @@ service:
       display-name: Create a new Credit note
       request: CreditNoteInput
       response: CreditNote
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+        - commons.UnprocessableEntityError
+      examples: 
+        - request: $CreditNoteInput.Example0
+          response: 
+            body: $CreditNote.Example0
 
     get:
       path: /{id}
@@ -27,6 +36,7 @@ service:
           docs: Id of the existing credit note
           type: string
       response: CreditNote
+      
 
     update:
       path: /{id}
@@ -85,6 +95,10 @@ types:
   CreditNoteInput:
     properties:
       credit_note: optional<CreditNoteInputObject>
+    examples:
+      - name: Example0 
+        value:
+          credit_note: $CreditNoteInputObject.Example0
 
   CreditNoteReason:
     enum:
@@ -108,6 +122,18 @@ types:
       credit_amount_cents: optional<integer>
       refund_amount_cents: optional<integer>
       items: optional<list<CreditNoteItem>>
+    examples:
+      - name: Example0
+        value: 
+          invoice_id: __LAGO_INVOICE_ID__
+          reason: duplicated_charge
+          credit_amount_cents: 10
+          refund_amount_cents: 5
+          items:
+            - fee_id: __LAGO_FEE_ID__
+              amount_cents: 10
+            - fee_id: __LAGO_FEE_ID__
+              amount_cents: 5
 
   CreditNoteUpdateInput:
     properties:
@@ -120,6 +146,10 @@ types:
   CreditNote:
     properties:
       credit_note: optional<CreditNoteObject>
+    examples:
+      - name: Example0 
+        value: 
+          credit_note: $CreditNoteObject.Example0
 
   CreditNoteObject:
     properties:
@@ -150,6 +180,50 @@ types:
       file_url: optional<string>
       customer: optional<customers.CustomerObject>
       items: optional<list<CreditNoteItemObject>>
+    examples:
+      - name: Example0 
+        value: 
+          lago_id: 5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba
+          sequential_id: 2
+          number: LAG-1234-CN2
+          lago_invoice_id: 5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba
+          invoice_number: LAG-1234
+          issuing_date: '2022-12-06'
+          credit_status: available
+          refund_status: pending
+          reason: other
+          description: Free text
+          total_amount_cents: 120
+          total_amount_currency: EUR
+          credit_amount_cents: 100
+          credit_amount_currency: EUR
+          refund_amount_cents: 0
+          refund_amount_currency: EUR
+          balance_amount_cents: 100
+          balance_amount_currency: EUR
+          vat_amount_cents: 20
+          vat_amount_currency: EUR
+          sub_total_vat_excluded_amount_cents: 100
+          sub_total_vat_excluded_amount_currency: EUR
+          created_at: '2022-10-06 09:52:00'
+          updated_at: '2022-10-06 09:52:00'
+          file_url: https://getlago.com/credit_note/file
+          items:
+            - lago_id: 5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba
+              amount_cents: 100
+              amount_currency: EUR
+              fee:
+                lago_id: 5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba
+                item:
+                  type: charge
+                  code: user_seats
+                  name: User Seats
+                amount_cents: 100
+                amount_currency: EUR
+                vat_amount_cents: 20
+                vat_amount_currency: EUR
+                units: 12.6
+                events_count: 10
 
   CreditStatus:
     enum:

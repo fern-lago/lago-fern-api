@@ -19,6 +19,11 @@ service:
         - commons.BadRequestError
         - commons.UnauthorizedError
         - commons.UnprocessableEntityError
+      examples: 
+        - request: 
+            billable_metric: $BillableMetricInputObject.Example0
+          response: 
+            body: $BillableMetric.Example0
 
     get:
       path: /{code}
