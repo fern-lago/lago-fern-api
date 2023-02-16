@@ -2,6 +2,7 @@
 
 imports:
   coupons: coupons.yml
+  commons: commons.yml
 
 service:
   display-name: Coupons Service
@@ -15,6 +16,14 @@ service:
       display-name: Create a new coupon
       request: CouponInput
       response: Coupon
+      errors:
+        - commons.BadRequestError
+        - commons.UnauthorizedError
+        - commons.UnprocessableEntityError
+      examples: 
+        - request: $CouponInput.Example0
+          response: 
+            body: $Coupon.Example0
 
     get:
       path: /coupons/{code}
@@ -26,6 +35,14 @@ service:
           docs: Code of the existing coupon
           type: string
       response: Coupon
+      errors: 
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+      examples: 
+        - path-parameters:
+            code: b7ab2926-1de8-4428-9bcd-779314ac129b
+          response: 
+            body: $Coupon.Example0
 
     update:
       path: /coupons/{code}
@@ -39,6 +56,15 @@ service:
       request:
         body: CouponInput
       response: Coupon
+      errors: 
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+      examples: 
+        - path-parameters:
+            code: b7ab2926-1de8-4428-9bcd-779314ac129b
+          request: $CouponInput.Example0
+          response: 
+            body: $Coupon.Example0
 
     destroy:
       path: /coupons/{code}
@@ -50,8 +76,16 @@ service:
           docs: Code of the existing coupon
           type: string
       response: Coupon
+      errors: 
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+      examples: 
+        - path-parameters:
+            code: b7ab2926-1de8-4428-9bcd-779314ac129b
+          response: 
+            body: $Coupon.Example0
 
-    find:
+    getAll:
       path: /coupons
       method: GET
       docs: Find all coupons in certain organisation
@@ -60,12 +94,21 @@ service:
         name: FindAllCouponsRequest
         query-parameters:
           page:
-            docs: Number of page
+            docs: Number of pages
             type: optional<integer>
           per_page:
             docs: Number of records per page
             type: optional<integer>
       response: Coupons
+      errors: 
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+      examples: 
+        - query-parameters:
+            page: 10
+            per_page: 20
+          response: 
+            body: $Coupons.Example0
 
     apply:
       path: /applied_coupons
@@ -74,8 +117,15 @@ service:
       display-name: Apply a coupon to a customer
       request: AppliedCouponInput
       response: AppliedCoupon
+      errors: 
+        - commons.UnauthorizedError
+        - commons.NotFoundError
+      examples:
+        - request: $AppliedCouponInput.Example0
+          response: 
+            body: $AppliedCoupon.Example0
 
-    findAllAppliedCoupons:
+    getAllAppliedCoupons:
       path: /applied_coupons
       method: GET
       docs: Find all applied coupons
@@ -96,15 +146,33 @@ service:
             docs: External customer ID
             type: optional<string>
       response: AppliedCoupons
+      errors:
+        - commons.UnauthorizedError
+      examples: 
+        - query-parameters:
+            page: 3
+            per_page: 2
+            status: active
+          response: 
+            body: $AppliedCoupons.Example0
 
 types:
   Coupons:
     properties:
       coupons: optional<list<CouponObject>>
+    examples:
+      - name: Example0 
+        value:
+          coupons:
+            -  $CouponObject.Example0
 
   AppliedCouponInput:
     properties:
       applied_coupon: optional<AppliedCouponInputObject>
+    examples:
+      - name: Example0 
+        value: 
+          applied_coupon: $AppliedCouponInputObject.Example0
 
   AppliedCouponInputObject:
     properties:
@@ -115,14 +183,33 @@ types:
       amount_cents: optional<integer>
       amount_currency: optional<string>
       percentage_rate: optional<double>
+    examples:
+      - name: Example0 
+        value: 
+          external_customer_id: cust_12345
+          coupon_code: my-coupon
+          frequency: recurring
+          frequency_duration: 5
+          amount_cents: 4000
+          amount_currency: USD
+          percentage_rate: 10.0
 
   AppliedCoupon:
     properties:
       applied_coupon: optional<AppliedCouponObject>
+    examples:
+      - name: Example0
+        value: 
+          applied_coupon: $AppliedCouponObject.Example0
 
   AppliedCoupons:
     properties:
       applied_coupons: optional<list<AppliedCouponObject>>
+    examples: 
+      - name: Example0 
+        value: 
+          applied_coupons: 
+            - $AppliedCouponObject.Example0
 
   CouponStatus:
     enum:
@@ -132,6 +219,10 @@ types:
   CouponInput:
     properties:
       coupon: optional<CouponInputObject>
+    examples:
+      - name: Example0 
+        value: 
+          coupon: $CouponInputObject.Example0
 
   CouponType:
     enum:
@@ -161,11 +252,32 @@ types:
       frequency_duration: optional<integer>
       expiration_at: optional<string>
       expiration: optional<ExpirationType>
+      applies_to: optional<PlanCodes>
+    examples:
+      - name: Example0 
+        value: 
+          name: coupon_name
+          code: coupon_code
+          amount_cents: 5000
+          amount_currency: USD
+          expiration: time_limit
+          expiration_at: '2022-08-08T23:59:59Z'
+          coupon_type: fixed_amount
+          reusable: true
+          frequency: recurring
+          frequency_duration: 3
+          applies_to:
+            plan_codes:
+              - code1
 
   Coupon:
     properties:
       coupon: optional<CouponObject>
-
+    examples: 
+      - name: Example0
+        value: 
+          coupon: $CouponObject.Example0
+  
   CouponObject:
     properties:
       lago_id: optional<string>
@@ -174,13 +286,34 @@ types:
       coupon_type: optional<CouponType>
       amount_cents: optional<integer>
       amount_currency: optional<string>
+      percentage_rate: optional<double>
+      limited_plans: optional<boolean>
+      plan_codes: optional<list<string>>
       reusable: optional<boolean>
       created_at: optional<string>
-      percentage_rate: optional<double>
       frequency: optional<FrequencyType>
       frequency_duration: optional<integer>
       expiration_at: optional<string>
       expiration: optional<ExpirationType>
+    examples: 
+      - name: Example0
+        value: 
+          lago_id: b7ab2926-1de8-4428-9bcd-779314ac129b
+          name: coupon_name
+          code: coupon_code
+          amount_cents: 5000
+          amount_currency: USD
+          percentage_rate: null
+          coupon_type: fixed_amount
+          reusable: true
+          limited_plans: true
+          plan_codes:
+            - code1
+          frequency: recurring
+          frequency_duration: 3
+          expiration: time_limit
+          expiration_at: '2022-08-08T23:59:59Z'
+          created_at: '2022-04-29T08:59:51Z'
 
   AppliedCouponObject:
     properties:
@@ -200,3 +333,23 @@ types:
       expiration_at: optional<string>
       created_at: optional<string>
       terminated_at: optional<string>
+    examples:
+      - name: Example0 
+        value: 
+          lago_id: b7ab2926-1de8-4428-9bcd-779314ac129b
+          lago_coupon_id: 5f45c5a2-4fc1-423f-aee0-0441081b6d8b
+          coupon_code: my-coupon
+          lago_customer_id: 900e863f-f450-4ec4-9112-4688e6ea7934
+          external_customer_id: cust_12345
+          status: active
+          amount_cents: 9000
+          amount_cents_remaining: 1000
+          amount_currency: USD
+          percentage_rate: 25.5
+          frequency: once
+          expiration_at: '2022-08-08T23:59:59Z'
+          created_at: '2022-04-29T08:59:51Z'
+
+  PlanCodes: 
+    type: optional<map<string, list<string>>>
+    docs: Settings with coupon limitations      
